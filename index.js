@@ -35,8 +35,14 @@ async function createTasksTable() {
 }
 
 // GET /tasks - Get all tasks
-app.get('/tasks', (req, res) => {
-    res.json(tasks);
+app.get('/tasks', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM tasks');
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        response.status(500).send("Server error.");
+    }
 });
 
 // POST /tasks - Add a new task
