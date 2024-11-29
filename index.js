@@ -19,6 +19,21 @@ let tasks = [
     { id: 2, description: 'Read a book', status: 'complete' },
 ];
 
+// function to create tasks table
+async function createTasksTable() {
+    try {
+        await pool.query(
+            `CREATE TABLE IF NOT EXISTS tasks (
+            id SERIAL PRIMARY KEY,
+            description TEXT NOT NULL,
+            status TEXT NOT NULL
+            );`
+        )
+    } catch(error) {
+        console.error("Error creating tasks table: ", error);
+    }
+}
+
 // GET /tasks - Get all tasks
 app.get('/tasks', (req, res) => {
     res.json(tasks);
@@ -60,6 +75,6 @@ app.delete('/tasks/:id', (request, response) => {
     response.json({ message: 'Task deleted successfully' });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// initalize database before starting server
+createTasksTable()
+    .then(() => app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`)));
