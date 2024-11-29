@@ -34,6 +34,17 @@ async function createTasksTable() {
     }
 }
 
+//data validation function
+const validateTask = (description, status) => {
+    if (!description || typeof description !== 'string' || description.trim().length === 0) {
+        return "Tasks description is required.";
+    }
+    if (!status || typeof status !== 'string' || status.trim().length === 0) {
+        return "Status of task is required.";
+    }
+     return null;
+}
+
 // GET /tasks - Get all tasks
 app.get('/tasks', async (req, res) => {
     try {
@@ -46,14 +57,8 @@ app.get('/tasks', async (req, res) => {
 });
 
 // POST /tasks - Add a new task
-app.post('/tasks', (request, response) => {
-    const { id, description, status } = request.body;
-    if (!id || !description || !status) {
-        return response.status(400).json({ error: 'All fields (id, description, status) are required' });
-    }
-
-    tasks.push({ id, description, status });
-    response.status(201).json({ message: 'Task added successfully' });
+app.post('/tasks', async (request, response) => {
+    
 });
 
 // PUT /tasks/:id - Update a task's status
