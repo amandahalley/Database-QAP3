@@ -108,15 +108,21 @@ app.put('/tasks/:id', async (request, response) => {
 });
 
 // DELETE /tasks/:id - Delete a task
-app.delete('/tasks/:id', (request, response) => {
-    const taskId = parseInt(request.params.id, 10);
-    const initialLength = tasks.length;
-    tasks = tasks.filter(t => t.id !== taskId);
+app.delete('/tasks/:id', async (request, response) => {
+   const {id}  = request.params;
 
-    if (tasks.length === initialLength) {
-        return response.status(404).json({ error: 'Task not found' });
+   try {
+    const result = await pool.query(
+        'DELETE FROM tasks WHERE id = $1 RETURNING *', [id]
+    );
+    if (result.rows.length === 0) {
+        return response.status(404).send("Task not found.")
     }
-    response.json({ message: 'Task deleted successfully' });
+    response.status(204).send("Task succesfully deleted.");
+   } catch (error) {
+    console.error(error);
+    response.status(500).send("Server error");
+   }
 });
 
 // initalize database before starting server
