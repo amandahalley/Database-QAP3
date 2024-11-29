@@ -58,7 +58,28 @@ app.get('/tasks', async (req, res) => {
 
 // POST /tasks - Add a new task
 app.post('/tasks', async (request, response) => {
-    
+    const {description, status} = request.body;
+
+    //validate data
+    const validationError = validateTask(description, status);
+    if (validationError) {
+        return response.status(500).send(validationError);
+    }
+
+    try {
+        const result = await pool.query(
+            'INSERT INTO tasks (description, status) VALUES ($1, $2) RETURNING *', [description, status]
+        );
+
+         //update the in memory array
+        const newTask = result.rows[0];
+        tasks.push(newTask);
+
+        response.status(201).json(newTask);
+    } catch (error) {
+        console.error("Error adding task:", error);
+        response.status(500).send("Server error.");
+    }
 });
 
 // PUT /tasks/:id - Update a task's status
