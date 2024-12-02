@@ -22,3 +22,6 @@ db.books.insertMany([
 
 RETRIEVE TITLES OF ALL BOOKS:
 db.books.find({}, {title:1, _id: 0});
+
+FIND ALL BOOKS WRITTEN BY J.R.R TOLKIEN
+db.books.find({ author: "J.R.R. Tolkien" });
