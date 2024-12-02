@@ -23,5 +23,18 @@ db.books.insertMany([
 RETRIEVE TITLES OF ALL BOOKS:
 db.books.find({}, {title:1, _id: 0});
 
-FIND ALL BOOKS WRITTEN BY J.R.R TOLKIEN
+FIND ALL BOOKS WRITTEN BY J.R.R TOLKIEN:
 db.books.find({ author: "J.R.R. Tolkien" });
+
+UPDATE GENRE OF "1984" to "Science-Fiction":
+db.books.updateOne(
+  {title: "1984"},
+  {$set: {genre: "Science-Fiction"}}
+);
+
+DELETE BOOK "The Hobbit":
+db.books.deleteOne(
+  {title: "The Hobbit"}
+);
+
+
